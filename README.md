@@ -9,6 +9,7 @@
 
 ## Структура проекту
 photo-studio/
+
     photostudio/
         __init__.py
         employees/
