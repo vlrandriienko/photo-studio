@@ -1,14 +1,9 @@
-import hashlib
-import hmac
-import secrets
 from abc import ABC, abstractmethod
 from decimal import Decimal, InvalidOperation
 from enum import Enum
 
 
 class Employee(ABC):
-    _passwordIterations = 600_000
-
     def __init__(self, employeeId, fullName, login, password, phone, storage):
         if type(employeeId) is not int or employeeId <= 0:
             raise ValueError("Ідентифікатор має бути додатним цілим числом.")
@@ -26,13 +21,7 @@ class Employee(ABC):
         self._fullName = fullName.strip()
         self._phone = phone.strip()
         self.__login = login.strip()
-        salt = secrets.token_bytes(16)
-        passwordHash = hashlib.pbkdf2_hmac(
-            "sha256", password.encode("utf-8"), salt, self._passwordIterations
-        )
-        self.__passwordHash = (
-            f"pbkdf2_sha256${self._passwordIterations}${salt.hex()}${passwordHash.hex()}"
-        )
+        self.__password = password
         self._storage = storage
 
     def getProfile(self):
@@ -42,22 +31,7 @@ class Employee(ABC):
         return self.__login
 
     def verifyPassword(self, password: str) -> bool:
-        if not isinstance(password, str):
-            return False
-
-        try:
-            algorithm, iterations, saltHex, passwordHashHex = self.__passwordHash.split("$")
-            if algorithm != "pbkdf2_sha256" or int(iterations) != self._passwordIterations:
-                return False
-            salt = bytes.fromhex(saltHex)
-            expectedHash = bytes.fromhex(passwordHashHex)
-        except ValueError:
-            return False
-
-        actualHash = hashlib.pbkdf2_hmac(
-            "sha256", password.encode("utf-8"), salt, self._passwordIterations
-        )
-        return hmac.compare_digest(actualHash, expectedHash)
+        return isinstance(password, str) and password == self.__password
 
     @abstractmethod
     def hasPermission(self, action):

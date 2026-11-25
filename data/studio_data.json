@@ -5,7 +5,7 @@
       "role": "Administrator",
       "fullName": "Олена Петренко",
       "login": "admin",
-      "passwordHash": "pbkdf2_sha256$600000$5cb02b39176fd829ec758797c3644bb0$d3bf9af9e691b360d96df09b68d910debe9bb931a29152163efd280e296c0be1",
+      "password": "password",
       "phone": "+380671111111"
     },
     {
@@ -13,7 +13,7 @@
       "role": "Receptionist",
       "fullName": "Олександр Іваненко",
       "login": "reception1",
-      "passwordHash": "pbkdf2_sha256$600000$851104a886119d1d4aba4bf0f5e14fb3$6fb2e1f76f4a22318d85762d37702ab44aac993ac8e38b4dd09d86a87c72b481",
+      "password": "password",
       "phone": "+380672222222"
     },
     {
@@ -21,15 +21,15 @@
       "role": "Receptionist",
       "fullName": "Ірина Шевченко",
       "login": "reception2",
-      "passwordHash": "pbkdf2_sha256$600000$1ba58ad776891e1db5a260296f84c3ce$48378b31c2aadad242ad8927fb28e14471fb0b932efcc9ccd8860600dd9b8938",
-      "phone": "+380673333333"
+      "phone": "+380673333333",
+      "password": "password"
     },
     {
       "employeeId": 4,
       "role": "Photographer",
       "fullName": "Марія Коваль",
       "login": "photographer",
-      "passwordHash": "pbkdf2_sha256$600000$814f7a5dd54fb37364b90c36ea05b7ec$7f8a3cb4887dc6bff3f3da54623867feff137588219cb3daedef307e73122230",
+      "password": "password",
       "phone": "+380674444444"
     }
   ],

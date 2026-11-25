@@ -33,7 +33,7 @@ def serializeData(storage, materialNorms):
             "role": type(employee).__name__,
             "fullName": employee._fullName,
             "login": employee.getLogin(),
-            "passwordHash": employee.__dict__["_Employee__passwordHash"],
+            "password": employee.__dict__["_Employee__password"],
             "phone": employee._phone,
         })
 
@@ -221,17 +221,16 @@ def deserializeData(data):
         role = record["role"]
         if role not in EMPLOYEE_TYPES:
             raise ValueError(f"Невідома роль працівника: {role}.")
-        if not isinstance(record["passwordHash"], str) or not record["passwordHash"].startswith(
-            "pbkdf2_sha256$"
-        ):
-            raise ValueError(f"Некоректний хеш пароля працівника {employeeId}.")
+        password = record["password"]
+        if not isinstance(password, str) or not password.strip():
+            raise ValueError(f"Некоректний пароль працівника {employeeId}.")
 
         employee = object.__new__(EMPLOYEE_TYPES[role])
         employee._employeeId = employeeId
         employee._fullName = record["fullName"]
         employee._phone = record["phone"]
         employee._Employee__login = record["login"]
-        employee._Employee__passwordHash = record["passwordHash"]
+        employee._Employee__password = password
         storage["employees"].append(employee)
         employees[employeeId] = employee
 
