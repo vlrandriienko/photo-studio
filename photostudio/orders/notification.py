@@ -4,50 +4,50 @@ from typing import Optional
 
 
 class Notification:
-    def __init__(self, notification_id: int, order_id: str, client_id: Optional[int] = None, message_text: str = ""):
-        self.__notification_id = notification_id
-        self.__order_id = order_id
-        self.__client_id = client_id
-        self.__message_text = message_text
-        self.__created_at = datetime.now()
-        self.__is_sent = False
+    def __init__(self, notificationId: int, orderId: str, clientId: Optional[int] = None, messageText: str = ""):
+        self.__notificationId = notificationId
+        self.__orderId = orderId
+        self.__clientId = clientId
+        self.__messageText = messageText
+        self.__createdAt = datetime.now()
+        self.__isSent = False
 
     @property
-    def notification_id(self) -> int:
-        return self.__notification_id
+    def notificationId(self) -> int:
+        return self.__notificationId
 
     @property
-    def order_id(self) -> str:
-        return self.__order_id
+    def orderId(self) -> str:
+        return self.__orderId
 
     @property
-    def client_id(self) -> Optional[int]:
-        return self.__client_id
+    def clientId(self) -> Optional[int]:
+        return self.__clientId
 
     @property
-    def message_text(self) -> str:
-        return self.__message_text
+    def messageText(self) -> str:
+        return self.__messageText
 
     @property
-    def created_at(self) -> datetime:
-        return self.__created_at
+    def createdAt(self) -> datetime:
+        return self.__createdAt
 
-    def generate_order_ready_message(self, order_id: str, total_price: Decimal | float | str) -> None:
-        self.__message_text = (
-            f"Ваше замовлення #{order_id} готове до видачі! "
-            f"До сплати: {Decimal(str(total_price)):.2f} грн."
+    def generateOrderReadyMessage(self, orderId: str, totalPrice: Decimal | float | str) -> None:
+        self.__messageText = (
+            f"Ваше замовлення #{orderId} готове до видачі! "
+            f"До сплати: {Decimal(str(totalPrice)):.2f} грн."
         )
 
-    def generate_shortage_message(self, order_id: str, material_name: str) -> None:
-        self.__message_text = (
-            f"Увага! Замовлення #{order_id} переведено в очікування через нестачу матеріалу: {material_name}."
+    def generateShortageMessage(self, orderId: str, materialName: str) -> None:
+        self.__messageText = (
+            f"Увага! Замовлення #{orderId} переведено в очікування через нестачу матеріалу: {materialName}."
         )
 
     def send(self) -> bool:
-        if not self.__message_text.strip() or self.__is_sent:
+        if not self.__messageText.strip() or self.__isSent:
             return False
-        self.__is_sent = True
+        self.__isSent = True
         return True
 
-    def get_status(self) -> bool:
-        return self.__is_sent
+    def getStatus(self) -> bool:
+        return self.__isSent

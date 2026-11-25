@@ -6,60 +6,60 @@ from .service import Service
 
 
 class OrderStatus(Enum):
-    ACCEPTED = "Прийнято"
-    AWAITING_MATERIALS = "Очікує матеріали"
-    IN_PROGRESS = "В роботі"
-    READY = "Готово"
-    ISSUED = "Видано"
+    accepted = "Прийнято"
+    awaitingMaterials = "Очікує матеріали"
+    inProgress = "В роботі"
+    ready = "Готово"
+    issued = "Видано"
 
 
 class Order:
-    _ALLOWED_TRANSITIONS = {
-        OrderStatus.ACCEPTED: {OrderStatus.IN_PROGRESS, OrderStatus.AWAITING_MATERIALS},
-        OrderStatus.AWAITING_MATERIALS: {OrderStatus.IN_PROGRESS},
-        OrderStatus.IN_PROGRESS: {OrderStatus.READY},
-        OrderStatus.READY: {OrderStatus.ISSUED},
-        OrderStatus.ISSUED: set(),
+    _allowedTransitions = {
+        OrderStatus.accepted: {OrderStatus.inProgress, OrderStatus.awaitingMaterials},
+        OrderStatus.awaitingMaterials: {OrderStatus.inProgress},
+        OrderStatus.inProgress: {OrderStatus.ready},
+        OrderStatus.ready: {OrderStatus.issued},
+        OrderStatus.issued: set(),
     }
 
-    URGENCY_MULTIPLIER = Decimal("1.25")
+    urgencyMultiplier = Decimal("1.25")
 
     def __init__(
         self,
-        order_id: str,
+        orderId: str,
         service: Service,
         quantity: int,
-        desired_deadline: datetime,
-        is_urgent: bool = False,
-        client_id: Optional[int] = None,
-        receptionist_id: Optional[int] = None,
+        desiredDeadline: datetime,
+        isUrgent: bool = False,
+        clientId: Optional[int] = None,
+        receptionistId: Optional[int] = None,
     ):
-        if not order_id or not order_id.strip():
+        if not orderId or not orderId.strip():
             raise ValueError("Вкажіть номер замовлення.")
         if quantity <= 0:
             raise ValueError("Кількість має бути більшою за нуль.")
 
-        self.__order_id = order_id.strip()
+        self.__orderId = orderId.strip()
         self.__service = service
-        self.__client_id = client_id
-        self.__receptionist_id = receptionist_id
-        self.__photographer_id: Optional[int] = None
+        self.__clientId = clientId
+        self.__receptionistId = receptionistId
+        self.__photographerId: Optional[int] = None
 
-        self.__created_at = datetime.now()
-        self.__desired_deadline = desired_deadline
+        self.__createdAt = datetime.now()
+        self.__desiredDeadline = desiredDeadline
         self.__quantity = quantity
-        self.__is_urgent = is_urgent
+        self.__isUrgent = isUrgent
 
-        self.__unit_price = service.get_tariff()
-        self.__base_price = self.calculate_base_price()
-        self.__total_price = self.calculate_total()
+        self.__unitPrice = service.getTariff()
+        self.__basePrice = self.calculateBasePrice()
+        self.__totalPrice = self.calculateTotal()
 
-        self.__status = OrderStatus.ACCEPTED
-        self.__completed_at: Optional[datetime] = None
+        self.__status = OrderStatus.accepted
+        self.__completedAt: Optional[datetime] = None
 
     @property
-    def order_id(self) -> str:
-        return self.__order_id
+    def orderId(self) -> str:
+        return self.__orderId
 
     @property
     def service(self) -> Service:
@@ -70,67 +70,67 @@ class Order:
         return self.__quantity
 
     @property
-    def is_urgent(self) -> bool:
-        return self.__is_urgent
+    def isUrgent(self) -> bool:
+        return self.__isUrgent
 
     @property
-    def created_at(self) -> datetime:
-        return self.__created_at
+    def createdAt(self) -> datetime:
+        return self.__createdAt
 
     @property
-    def desired_deadline(self) -> datetime:
-        return self.__desired_deadline
+    def desiredDeadline(self) -> datetime:
+        return self.__desiredDeadline
 
     @property
-    def completed_at(self) -> Optional[datetime]:
-        return self.__completed_at
+    def completedAt(self) -> Optional[datetime]:
+        return self.__completedAt
 
     @property
-    def client_id(self) -> Optional[int]:
-        return self.__client_id
+    def clientId(self) -> Optional[int]:
+        return self.__clientId
 
     @property
-    def photographer_id(self) -> Optional[int]:
-        return self.__photographer_id
+    def photographerId(self) -> Optional[int]:
+        return self.__photographerId
 
-    def assign_photographer(self, photographer_id: int) -> None:
-        self.__photographer_id = photographer_id
+    def assignPhotographer(self, photographerId: int) -> None:
+        self.__photographerId = photographerId
 
-    def calculate_base_price(self) -> Decimal:
-        self.__base_price = (self.__unit_price * Decimal(self.__quantity)).quantize(
+    def calculateBasePrice(self) -> Decimal:
+        self.__basePrice = (self.__unitPrice * Decimal(self.__quantity)).quantize(
             Decimal("0.01"), rounding=ROUND_HALF_UP
         )
-        return self.__base_price
+        return self.__basePrice
 
-    def calculate_total(self) -> Decimal:
-        base = self.calculate_base_price()
-        if self.__is_urgent:
-            total = base * self.URGENCY_MULTIPLIER
+    def calculateTotal(self) -> Decimal:
+        base = self.calculateBasePrice()
+        if self.__isUrgent:
+            total = base * self.urgencyMultiplier
         else:
             total = base
-        self.__total_price = total.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-        return self.__total_price
+        self.__totalPrice = total.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        return self.__totalPrice
 
-    def set_urgency(self, urgent: bool) -> None:
-        if self.__status != OrderStatus.ACCEPTED:
+    def setUrgency(self, urgent: bool) -> None:
+        if self.__status != OrderStatus.accepted:
             raise ValueError("Змінювати терміновість можна лише для замовлення в статусі 'Прийнято'.")
-        self.__is_urgent = urgent
-        self.calculate_total()
+        self.__isUrgent = urgent
+        self.calculateTotal()
 
-    def change_status(self, new_status: OrderStatus) -> bool:
-        if new_status not in self._ALLOWED_TRANSITIONS.get(self.__status, set()):
+    def changeStatus(self, newStatus: OrderStatus) -> bool:
+        if newStatus not in self._allowedTransitions.get(self.__status, set()):
             return False
 
-        self.__status = new_status
-        if new_status == OrderStatus.READY:
-            self.__completed_at = datetime.now()
+        self.__status = newStatus
+        if newStatus == OrderStatus.ready:
+            self.__completedAt = datetime.now()
         return True
 
-    def can_be_issued(self, is_paid: bool) -> bool:
-        return self.__status == OrderStatus.READY and is_paid is True
+    def canBeIssued(self, isPaid: bool) -> bool:
+        return self.__status == OrderStatus.ready and isPaid is True
 
-    def get_status(self) -> OrderStatus:
+    def getStatus(self) -> OrderStatus:
         return self.__status
 
-    def get_total_price(self) -> Decimal:
-        return self.__total_price
+    def getTotalPrice(self) -> Decimal:
+        return self.__totalPrice

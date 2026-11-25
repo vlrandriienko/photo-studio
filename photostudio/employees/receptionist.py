@@ -8,9 +8,11 @@ class Receptionist(Employee):
     def hasPermission(self, action):
         return action in self.PERMISSIONS
 
-    def createOrder(self, client, service, quantity, desiredDeadline, isUrgent=False):
+    def createOrder(self, orderId, client, service, quantity, desiredDeadline, isUrgent=False):
         if client is None or service is None:
             raise ValueError("Потрібно вказати клієнта та послугу.")
+        if not isinstance(orderId, str) or not orderId.strip():
+            raise ValueError("Вкажіть номер замовлення.")
         if type(quantity) is not int or quantity <= 0:
             raise ValueError("Кількість має бути додатним цілим числом.")
         if not isinstance(desiredDeadline, datetime):
@@ -21,12 +23,13 @@ class Receptionist(Employee):
         from ..orders.order import Order
 
         order = Order(
-            client=client,
+            orderId=orderId,
             service=service,
             quantity=quantity,
             desiredDeadline=desiredDeadline,
             isUrgent=isUrgent,
-            receptionist=self
+            clientId=getattr(client, "clientId", None),
+            receptionistId=self._employeeId,
         )
         self._storage["orders"].append(order)
         return order
