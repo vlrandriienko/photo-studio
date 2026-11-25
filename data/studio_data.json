@@ -3,9 +3,9 @@
     {
       "employeeId": 1,
       "role": "Administrator",
-      "fullName": "Олена Петренко",
+      "fullName": "Олена Петренко0",
       "login": "admin",
-      "password": "password",
+      "password": "1234",
       "phone": "+380671111111"
     },
     {
@@ -13,7 +13,7 @@
       "role": "Receptionist",
       "fullName": "Олександр Іваненко",
       "login": "reception1",
-      "password": "password",
+      "password": "1234",
       "phone": "+380672222222"
     },
     {
@@ -22,15 +22,23 @@
       "fullName": "Ірина Шевченко",
       "login": "reception2",
       "phone": "+380673333333",
-      "password": "password"
+      "password": "1234"
     },
     {
       "employeeId": 4,
       "role": "Photographer",
       "fullName": "Марія Коваль",
       "login": "photographer",
-      "password": "password",
+      "password": "1234",
       "phone": "+380674444444"
+    },
+    {
+      "employeeId": 5,
+      "role": "Photographer",
+      "fullName": "Дмитро Бондар",
+      "login": "photographer2",
+      "password": "1234",
+      "phone": "+380675555555"
     }
   ],
   "clients": [
