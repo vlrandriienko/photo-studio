@@ -34,7 +34,7 @@ class Receptionist(Employee):
         self._storage["orders"].append(order)
         return order
 
-    def recordPayment(self, order, amount, paymentMethod):
+    def recordPayment(self, paymentId, order, amount, paymentMethod):
         if self._status(order) != "Готово":
             return False
 
@@ -49,13 +49,16 @@ class Receptionist(Employee):
             return False
 
         for payment in self._storage["payments"]:
-            if payment.order is order and payment.isPaid():
+            if payment.orderId == order.orderId:
+                return False
+            if payment.paymentId == paymentId:
                 return False
 
         from ..orders.payment import Payment
 
         payment = Payment(
-            order=order,
+            paymentId=paymentId,
+            orderId=order.orderId,
             amount=amount,
             paymentMethod=paymentMethod.strip()
         )
@@ -73,10 +76,11 @@ class Receptionist(Employee):
 
         isPaid = False
         for payment in self._storage["payments"]:
-            if payment.order is order and payment.isPaid():
+            if payment.orderId == order.orderId and payment.isPaid():
                 isPaid = True
                 break
 
         if not order.canBeIssued(isPaid):
             return False
-        return order.changeStatus("Видано")
+        from ..orders.order import OrderStatus
+        return order.changeStatus(OrderStatus.issued)
