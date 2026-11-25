@@ -36,19 +36,9 @@ class Client:
             self.__orders.append(order)
 
     def getOrders(self) -> List[Any]:
-        orders = list(self.__orders)
-        for order in orders:
-            order_client = getattr(order, "client", None)
-            if order_client is self and order not in orders:
-                orders.append(order)
-        return orders
+        return list(self.__orders)
 
     def getOrderStatus(self, order: Any) -> Any:
-        if order is None:
+        if order not in self.__orders:
             return None
-        order_client = getattr(order, "client", None)
-        if order not in self.__orders and order_client is not self:
-            return None
-        if hasattr(order, "getStatus"):
-            return order.getStatus()
-        return getattr(order, "status", None)
+        return order.getStatus()

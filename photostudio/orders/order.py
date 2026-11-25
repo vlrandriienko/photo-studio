@@ -36,8 +36,14 @@ class Order:
     ):
         if not orderId or not orderId.strip():
             raise ValueError("Вкажіть номер замовлення.")
-        if quantity <= 0:
-            raise ValueError("Кількість має бути більшою за нуль.")
+        if type(quantity) is not int or quantity <= 0:
+            raise ValueError("Кількість має бути додатним цілим числом.")
+        if not isinstance(desiredDeadline, datetime):
+            raise ValueError("Бажаний термін має містити дату та час.")
+        if type(isUrgent) is not bool:
+            raise ValueError("Терміновість має бути логічним значенням.")
+        if not isinstance(service, Service):
+            raise ValueError("Некоректна послуга.")
 
         self.__orderId = orderId.strip()
         self.__service = service

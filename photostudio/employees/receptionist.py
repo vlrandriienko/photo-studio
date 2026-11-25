@@ -31,6 +31,7 @@ class Receptionist(Employee):
             clientId=getattr(client, "clientId", None),
             receptionistId=self._employeeId,
         )
+        client.addOrder(order)
         self._storage["orders"].append(order)
         return order
 

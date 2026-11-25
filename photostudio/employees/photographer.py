@@ -69,8 +69,34 @@ class Photographer(Employee):
         if self._status(order) != "В роботі":
             return False
 
-        # Дату готовності та сповіщення обробляє клас Order.
-        return order.changeStatus("Готово")
+        requirements = self._storage.get("materialRequirements", {})
+        required = requirements.get(order.orderId)
+        if required is None:
+            return False
+
+        requiredTotals = {}
+        for material, requiredQuantity in required:
+            quantity = self._positiveDecimal(requiredQuantity)
+            if quantity is None:
+                return False
+
+            materialKey = id(material)
+            if materialKey in requiredTotals:
+                requiredTotals[materialKey][1] += quantity
+            else:
+                requiredTotals[materialKey] = [material, quantity]
+
+        usages = self._storage.get("usages", [])
+        for material, requiredQuantity in requiredTotals.values():
+            usedQuantity = sum(
+                (usage.quantity for usage in usages if usage.order is order and usage.material is material),
+                start=0,
+            )
+            if usedQuantity < requiredQuantity:
+                return False
+
+        from ..orders.order import OrderStatus
+        return order.changeStatus(OrderStatus.ready)
 
     def registerMaterialUsage(self, order, material, quantity, operationId=None):
         quantity = self._positiveDecimal(quantity)
@@ -101,7 +127,6 @@ class Photographer(Employee):
         if self._status(order) != "В роботі":
             return False
         if not material.checkAvailability(quantity):
-            order.changeStatus("Очікує матеріали")
             return False
 
         from ..inventory.material_usage import MaterialUsage
@@ -110,7 +135,6 @@ class Photographer(Employee):
         if not usage.validateQuantity():
             return False
         if not material.writeOff(quantity):
-            order.changeStatus("Очікує матеріали")
             return False
 
         self._storage["usages"].append(usage)
