@@ -3,8 +3,6 @@ from __future__ import annotations
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 from getpass import getpass
-from hashlib import pbkdf2_hmac
-from secrets import token_bytes
 from uuid import uuid4
 
 from photostudio.studio import Studio
@@ -141,7 +139,8 @@ def show_services(studio):
         tariff = call(service, 'getTariff', 'get_tariff')
         unit = field(service, 'measurementUnit', 'measurement_unit', default='од.')
         sid = field(service, 'serviceId', 'service_id')
-        print(f'{sid}: {service.name} | {money(tariff)}/{unit}')
+        material_note = '' if service.requiresMaterials else ' | без фізичних матеріалів'
+        print(f'{sid}: {service.name} | {money(tariff)}/{unit}{material_note}')
 
 
 def show_materials(studio):
@@ -192,14 +191,6 @@ def next_numeric_id(objects, *attribute_names):
     return max(ids, default=0) + 1
 
 
-def hash_password(password):
-    """PBKDF2-SHA256. Employee.verifyPassword повинен використовувати цей формат."""
-    salt = token_bytes(16)
-    iterations = 250_000
-    digest = pbkdf2_hmac('sha256', password.encode('utf-8'), salt, iterations)
-    return f'pbkdf2_sha256${iterations}${salt.hex()}${digest.hex()}'
-
-
 def add_employee(studio, *, initial=False):
     if initial:
         cls = Administrator
@@ -229,7 +220,7 @@ def add_employee(studio, *, initial=False):
         employeeId=eid,
         fullName=name,
         login=login,
-        passwordHash=hash_password(password),
+        password=password,
         phone=phone,
         storage=studio.storage,
     )
@@ -379,16 +370,21 @@ def photographer_menu(studio, employee):
 
 def add_service(studio):
     sid = next_numeric_id(studio.storage['services'], 'serviceId', 'service_id')
+    requiresMaterials = read_yes_no('Послуга потребує фізичних матеріалів?')
     service = Service(
-        service_id=sid,
+        serviceId=sid,
         name=read_text('Назва послуги: '),
-        base_tariff=read_decimal('Тариф: '),
-        measurement_unit=read_text('Одиниця послуги (фото/шт.): '),
+        baseTariff=read_decimal('Тариф: '),
+        measurementUnit=read_text('Одиниця послуги (фото/шт.): '),
+        requiresMaterials=requiresMaterials,
     )
     studio.addService(service)
     save(studio)
     print(f'Послугу додано. ID: {sid}')
-    print('Не забудьте налаштувати нормативи матеріалів для цієї послуги.')
+    if requiresMaterials:
+        print('Не забудьте налаштувати нормативи матеріалів для цієї послуги.')
+    else:
+        print('Для цієї послуги матеріальні нормативи не потрібні.')
 
 
 def add_material(studio):
@@ -410,6 +406,12 @@ def set_norm(studio):
     if not studio.storage['services']:
         return
     sid = read_int('ID послуги: ')
+    service = studio.getService(sid)
+    if service is None:
+        raise ValueError('Послугу не знайдено.')
+    if not service.requiresMaterials:
+        print('Для цієї послуги матеріальні нормативи не потрібні.')
+        return
     show_materials(studio)
     if not studio.storage['materials']:
         return

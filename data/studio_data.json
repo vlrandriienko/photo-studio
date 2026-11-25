@@ -1,0 +1,392 @@
+{
+  "employees": [
+    {
+      "employeeId": 1,
+      "role": "Administrator",
+      "fullName": "Олена Адміністратор",
+      "login": "admin",
+      "passwordHash": "pbkdf2_sha256$600000$5cb02b39176fd829ec758797c3644bb0$d3bf9af9e691b360d96df09b68d910debe9bb931a29152163efd280e296c0be1",
+      "phone": "+380671111111"
+    },
+    {
+      "employeeId": 2,
+      "role": "Receptionist",
+      "fullName": "Анна Приймальниця",
+      "login": "reception1",
+      "passwordHash": "pbkdf2_sha256$600000$851104a886119d1d4aba4bf0f5e14fb3$6fb2e1f76f4a22318d85762d37702ab44aac993ac8e38b4dd09d86a87c72b481",
+      "phone": "+380672222222"
+    },
+    {
+      "employeeId": 3,
+      "role": "Receptionist",
+      "fullName": "Ірина Приймальниця",
+      "login": "reception2",
+      "passwordHash": "pbkdf2_sha256$600000$1ba58ad776891e1db5a260296f84c3ce$48378b31c2aadad242ad8927fb28e14471fb0b932efcc9ccd8860600dd9b8938",
+      "phone": "+380673333333"
+    },
+    {
+      "employeeId": 4,
+      "role": "Photographer",
+      "fullName": "Марія Фотограф",
+      "login": "photographer",
+      "passwordHash": "pbkdf2_sha256$600000$814f7a5dd54fb37364b90c36ea05b7ec$7f8a3cb4887dc6bff3f3da54623867feff137588219cb3daedef307e73122230",
+      "phone": "+380674444444"
+    }
+  ],
+  "clients": [
+    {
+      "clientId": 1,
+      "firstName": "Олена",
+      "lastName": "Петренко",
+      "phone": "+380501234567"
+    },
+    {
+      "clientId": 2,
+      "firstName": "Андрій",
+      "lastName": "Коваленко",
+      "phone": "+380671234568"
+    },
+    {
+      "clientId": 3,
+      "firstName": "Марія",
+      "lastName": "Шевченко",
+      "phone": "+380931234569"
+    },
+    {
+      "clientId": 4,
+      "firstName": "Іван",
+      "lastName": "Бондаренко",
+      "phone": "+380991234570"
+    },
+    {
+      "clientId": 5,
+      "firstName": "Софія",
+      "lastName": "Мельник",
+      "phone": "+380631234571"
+    }
+  ],
+  "services": [
+    {
+      "serviceId": 1,
+      "name": "Друк 10×15",
+      "baseTariff": "5.00",
+      "measurementUnit": "фото",
+      "requiresMaterials": true
+    },
+    {
+      "serviceId": 2,
+      "name": "Друк 15×21",
+      "baseTariff": "12.00",
+      "measurementUnit": "фото",
+      "requiresMaterials": true
+    },
+    {
+      "serviceId": 3,
+      "name": "Фото на документи",
+      "baseTariff": "100.00",
+      "measurementUnit": "набір",
+      "requiresMaterials": true
+    },
+    {
+      "serviceId": 4,
+      "name": "Ретуш",
+      "baseTariff": "80.00",
+      "measurementUnit": "фото",
+      "requiresMaterials": false
+    }
+  ],
+  "materials": [
+    {
+      "materialId": 1,
+      "name": "Фотопапір 10×15",
+      "stockQuantity": "56",
+      "unit": "аркуш",
+      "minStock": "10"
+    },
+    {
+      "materialId": 2,
+      "name": "Фотопапір 15×21",
+      "stockQuantity": "29",
+      "unit": "аркуш",
+      "minStock": "8"
+    },
+    {
+      "materialId": 3,
+      "name": "Чорнило",
+      "stockQuantity": "2.48",
+      "unit": "мл",
+      "minStock": "0.5"
+    },
+    {
+      "materialId": 4,
+      "name": "Конверти",
+      "stockQuantity": "49.6",
+      "unit": "шт.",
+      "minStock": "10"
+    },
+    {
+      "materialId": 5,
+      "name": "Фоторамки",
+      "stockQuantity": "12",
+      "unit": "шт.",
+      "minStock": "2"
+    }
+  ],
+  "orders": [
+    {
+      "orderId": "ORD001",
+      "clientId": 1,
+      "serviceId": 1,
+      "receptionistId": 2,
+      "photographerId": null,
+      "quantity": 10,
+      "isUrgent": false,
+      "status": "Прийнято",
+      "createdAt": "2026-11-25T09:00:00",
+      "desiredDeadline": "2026-11-29T15:00:00",
+      "completedAt": null,
+      "unitPrice": "5.00",
+      "basePrice": "50.00",
+      "totalPrice": "50.00"
+    },
+    {
+      "orderId": "ORD002",
+      "clientId": 2,
+      "serviceId": 2,
+      "receptionistId": 3,
+      "photographerId": null,
+      "quantity": 5,
+      "isUrgent": false,
+      "status": "Очікує матеріали",
+      "createdAt": "2026-11-24T10:15:00",
+      "desiredDeadline": "2026-11-28T12:00:00",
+      "completedAt": null,
+      "unitPrice": "12.00",
+      "basePrice": "60.00",
+      "totalPrice": "60.00"
+    },
+    {
+      "orderId": "ORD003",
+      "clientId": 3,
+      "serviceId": 3,
+      "receptionistId": 2,
+      "photographerId": 4,
+      "quantity": 1,
+      "isUrgent": false,
+      "status": "В роботі",
+      "createdAt": "2026-11-23T11:00:00",
+      "desiredDeadline": "2026-11-27T16:00:00",
+      "completedAt": null,
+      "unitPrice": "100.00",
+      "basePrice": "100.00",
+      "totalPrice": "100.00"
+    },
+    {
+      "orderId": "ORD004",
+      "clientId": 4,
+      "serviceId": 1,
+      "receptionistId": 3,
+      "photographerId": 4,
+      "quantity": 2,
+      "isUrgent": false,
+      "status": "Готово",
+      "createdAt": "2026-11-22T09:30:00",
+      "desiredDeadline": "2026-11-25T16:00:00",
+      "completedAt": "2026-11-25T10:30:00",
+      "unitPrice": "5.00",
+      "basePrice": "10.00",
+      "totalPrice": "10.00"
+    },
+    {
+      "orderId": "ORD005",
+      "clientId": 5,
+      "serviceId": 2,
+      "receptionistId": 2,
+      "photographerId": 4,
+      "quantity": 1,
+      "isUrgent": false,
+      "status": "Видано",
+      "createdAt": "2026-11-20T13:00:00",
+      "desiredDeadline": "2026-11-23T17:00:00",
+      "completedAt": "2026-11-23T12:00:00",
+      "unitPrice": "12.00",
+      "basePrice": "12.00",
+      "totalPrice": "12.00"
+    },
+    {
+      "orderId": "ORD006",
+      "clientId": 1,
+      "serviceId": 4,
+      "receptionistId": 3,
+      "photographerId": null,
+      "quantity": 1,
+      "isUrgent": true,
+      "status": "Прийнято",
+      "createdAt": "2026-11-25T09:45:00",
+      "desiredDeadline": "2026-11-26T12:00:00",
+      "completedAt": null,
+      "unitPrice": "80.00",
+      "basePrice": "80.00",
+      "totalPrice": "100.00"
+    }
+  ],
+  "payments": [
+    {
+      "paymentId": 1,
+      "orderId": "ORD004",
+      "amount": "10.00",
+      "paymentDate": "2026-11-25T11:00:00",
+      "paymentMethod": "картка",
+      "isConfirmed": true
+    },
+    {
+      "paymentId": 2,
+      "orderId": "ORD005",
+      "amount": "12.00",
+      "paymentDate": "2026-11-23T12:30:00",
+      "paymentMethod": "готівка",
+      "isConfirmed": true
+    }
+  ],
+  "notifications": [
+    {
+      "notificationId": 1,
+      "orderId": "ORD004",
+      "clientId": 4,
+      "messageText": "Ваше замовлення #ORD004 готове до видачі! До сплати: 10.00 грн.",
+      "createdAt": "2026-11-25T10:30:00",
+      "isSent": true
+    },
+    {
+      "notificationId": 2,
+      "orderId": "ORD005",
+      "clientId": 5,
+      "messageText": "Ваше замовлення #ORD005 готове до видачі! До сплати: 12.00 грн.",
+      "createdAt": "2026-11-23T12:00:00",
+      "isSent": true
+    }
+  ],
+  "usages": [
+    {
+      "usageId": 1,
+      "orderId": "ORD003",
+      "materialId": 1,
+      "quantity": "2",
+      "recordedAt": "2026-11-25T10:00:00"
+    },
+    {
+      "usageId": 2,
+      "orderId": "ORD003",
+      "materialId": 3,
+      "quantity": "0.02",
+      "recordedAt": "2026-11-25T10:01:00"
+    },
+    {
+      "usageId": 3,
+      "orderId": "ORD004",
+      "materialId": 1,
+      "quantity": "2",
+      "recordedAt": "2026-11-25T10:15:00"
+    },
+    {
+      "usageId": 4,
+      "orderId": "ORD004",
+      "materialId": 4,
+      "quantity": "0.4",
+      "recordedAt": "2026-11-25T10:16:00"
+    },
+    {
+      "usageId": 5,
+      "orderId": "ORD005",
+      "materialId": 2,
+      "quantity": "1",
+      "recordedAt": "2026-11-23T11:30:00"
+    }
+  ],
+  "materialNorms": {
+    "1": {
+      "1": "1",
+      "4": "0.2"
+    },
+    "2": {
+      "2": "1.5"
+    },
+    "3": {
+      "1": "4",
+      "3": "0.02"
+    },
+    "4": {}
+  },
+  "materialRequirements": {
+    "ORD001": [
+      {
+        "materialId": 1,
+        "quantity": "10"
+      },
+      {
+        "materialId": 4,
+        "quantity": "2"
+      }
+    ],
+    "ORD002": [
+      {
+        "materialId": 2,
+        "quantity": "7.5"
+      }
+    ],
+    "ORD003": [
+      {
+        "materialId": 1,
+        "quantity": "4"
+      },
+      {
+        "materialId": 3,
+        "quantity": "0.02"
+      }
+    ],
+    "ORD004": [
+      {
+        "materialId": 1,
+        "quantity": "2"
+      },
+      {
+        "materialId": 4,
+        "quantity": "0.4"
+      }
+    ],
+    "ORD005": [
+      {
+        "materialId": 2,
+        "quantity": "1.5"
+      }
+    ],
+    "ORD006": []
+  },
+  "usageOperations": {
+    "demo-op-001": {
+      "orderId": "ORD003",
+      "materialId": 1,
+      "quantity": "2"
+    },
+    "demo-op-002": {
+      "orderId": "ORD003",
+      "materialId": 3,
+      "quantity": "0.02"
+    },
+    "demo-op-003": {
+      "orderId": "ORD004",
+      "materialId": 1,
+      "quantity": "2"
+    },
+    "demo-op-004": {
+      "orderId": "ORD004",
+      "materialId": 4,
+      "quantity": "0.4"
+    },
+    "demo-op-005": {
+      "orderId": "ORD005",
+      "materialId": 2,
+      "quantity": "1"
+    }
+  }
+}

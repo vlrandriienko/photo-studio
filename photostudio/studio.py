@@ -123,8 +123,12 @@ class Studio:
     # ---------- НОРМАТИВИ МАТЕРІАЛІВ ----------
 
     def setMaterialNorm(self, serviceId, materialId, quantity):
-        if self.getService(serviceId) is None:
+        service = self.getService(serviceId)
+        if service is None:
             raise ValueError("Послугу не знайдено.")
+
+        if not service.requiresMaterials:
+            raise ValueError("Для цієї послуги матеріали не потрібні.")
 
         if self.getMaterial(materialId) is None:
             raise ValueError("Матеріал не знайдено.")
@@ -146,6 +150,10 @@ class Studio:
 
     def calculateMaterialRequirements(self, order):
         serviceId = order.service.serviceId
+
+        if not order.service.requiresMaterials:
+            self.storage["materialRequirements"][order.orderId] = []
+            return []
 
         if serviceId not in self.materialNorms:
             raise ValueError(
@@ -193,7 +201,7 @@ class Studio:
         if service is None:
             raise ValueError("Послугу не знайдено.")
 
-        if not self.materialNorms.get(serviceId):
+        if service.requiresMaterials and not self.materialNorms.get(serviceId):
             raise ValueError(
                 "Для послуги не встановлено нормативи матеріалів."
             )

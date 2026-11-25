@@ -1,17 +1,27 @@
 from decimal import Decimal
 
 class Service:
-    def __init__(self, serviceId: int, name: str, baseTariff: Decimal | float | str, measurementUnit: str):
+    def __init__(
+        self,
+        serviceId: int,
+        name: str,
+        baseTariff: Decimal | float | str,
+        measurementUnit: str,
+        requiresMaterials: bool = True,
+    ):
         tariff = Decimal(str(baseTariff))
         if tariff <= Decimal("0"):
             raise ValueError("Ціна послуги повинна бути більше нуля.")
         if not name or not name.strip():
             raise ValueError("Назва послуги не може бути порожньою.")
+        if type(requiresMaterials) is not bool:
+            raise ValueError("Ознака потреби в матеріалах має бути логічним значенням.")
 
         self.__serviceId = serviceId
         self.__name = name.strip()
         self.__baseTariff = tariff
         self.__measurementUnit = measurementUnit.strip()
+        self.__requiresMaterials = requiresMaterials
 
     @property
     def serviceId(self) -> int:
@@ -24,6 +34,10 @@ class Service:
     @property
     def measurementUnit(self) -> str:
         return self.__measurementUnit
+
+    @property
+    def requiresMaterials(self) -> bool:
+        return self.__requiresMaterials
 
     def updatePrice(self, newTariff: Decimal | float | str) -> bool:
         tariff = Decimal(str(newTariff))
