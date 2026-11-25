@@ -1,4 +1,5 @@
 from .employee import Employee
+from ..orders.order import OrderStatus
 
 
 class Photographer(Employee):
@@ -60,10 +61,10 @@ class Photographer(Employee):
         for material, quantity in totals.values():
             if not material.checkAvailability(quantity):
                 if status == "Прийнято":
-                    order.changeStatus("Очікує матеріали")
+                    order.changeStatus(OrderStatus.awaitingMaterials)
                 return False
 
-        return order.changeStatus("В роботі")
+        return order.changeStatus(OrderStatus.inProgress)
 
     def completeOrder(self, order):
         if self._status(order) != "В роботі":
@@ -95,7 +96,6 @@ class Photographer(Employee):
             if usedQuantity < requiredQuantity:
                 return False
 
-        from ..orders.order import OrderStatus
         return order.changeStatus(OrderStatus.ready)
 
     def registerMaterialUsage(self, order, material, quantity, operationId=None):
