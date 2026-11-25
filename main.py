@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
-from getpass import getpass
 from uuid import uuid4
 
 from photostudio.studio import Studio
@@ -212,8 +211,8 @@ def add_employee(studio, *, initial=False):
             print('Такий логін уже існує.')
             return
     while True:
-        password = getpass('Пароль (мін. 8 символів): ')
-        if len(password) >= 8:
+        password = input('Пароль (мін. 4 символи): ')
+        if len(password) >= 4:
             break
         print('Пароль занадто короткий.')
     employee = cls(
@@ -503,7 +502,7 @@ def menu_loop(title, options, actions):
 def login_menu(studio):
     print('\n=== ВХІД ПРАЦІВНИКА ===')
     login = read_text('Логін: ')
-    password = getpass('Пароль: ')
+    password = input('Пароль: ')
     try:
         employee = studio.login(login, password)
     except (ValueError, AttributeError) as exc:
