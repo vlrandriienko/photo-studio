@@ -4,6 +4,7 @@ from photostudio.orders.notification import Notification
 from photostudio.employees.receptionist import Receptionist
 from datetime import date
 from photostudio.employees.administrator import Administrator
+from photostudio.storage import saveData, loadData
 
 
 class Studio:
@@ -422,3 +423,12 @@ class Studio:
                 raise ValueError("Неправильний логін або пароль.")
 
         raise ValueError("Неправильний логін або пароль.")
+
+    def save(self):
+        saveData(self.storage, self.materialNorms)
+
+    def load(self):
+        result = loadData()
+
+        if result is not None:
+            self.storage, self.materialNorms = result
