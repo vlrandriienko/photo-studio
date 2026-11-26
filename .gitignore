@@ -5,3 +5,7 @@ htmlcov/
 coverage.json
 __pycache__/
 .pytest_cache/
+/TestResults
+/run_tests.py
+/.gitignore
+/.gitignore
