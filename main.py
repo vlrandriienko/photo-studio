@@ -16,7 +16,6 @@ from photostudio.inventory.photo_material import PhotoMaterial
 # -------------------- ДОПОМІЖНІ ФУНКЦІЇ --------------------
 
 def field(obj, *names, default=None):
-    """Читає властивість із підтримкою camelCase та snake_case."""
     for name in names:
         if hasattr(obj, name):
             value = getattr(obj, name)
@@ -26,7 +25,6 @@ def field(obj, *names, default=None):
 
 
 def call(obj, *method_names):
-    """Викликає перший наявний метод без аргументів."""
     for name in method_names:
         method = getattr(obj, name, None)
         if callable(method):
@@ -273,7 +271,7 @@ def receive_payment(studio, employee):
         receptionistId=employee_id(employee),
         orderId=oid,
         amount=read_decimal('Сума платежу: '),
-        paymentMethod=read_text('Спосіб оплати (готівка/картка): '),
+        paymentMethod=read_text('Спосіб оплати (г/к): '),
     )
     if result_message(result, 'Оплату прийнято.'):
         save(studio)

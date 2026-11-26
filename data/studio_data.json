@@ -258,6 +258,54 @@
       "unitPrice": "100.00",
       "basePrice": "400.00",
       "totalPrice": "400.00"
+    },
+    {
+      "orderId": "ORD008",
+      "clientId": 6,
+      "serviceId": 3,
+      "receptionistId": 2,
+      "photographerId": null,
+      "quantity": 4,
+      "isUrgent": false,
+      "status": "Прийнято",
+      "createdAt": "2026-11-26T21:45:01.863579",
+      "desiredDeadline": "2026-12-01T12:30:00",
+      "completedAt": null,
+      "unitPrice": "100.00",
+      "basePrice": "400.00",
+      "totalPrice": "400.00"
+    },
+    {
+      "orderId": "ORD009",
+      "clientId": 6,
+      "serviceId": 3,
+      "receptionistId": 2,
+      "photographerId": null,
+      "quantity": 4,
+      "isUrgent": true,
+      "status": "Прийнято",
+      "createdAt": "2026-11-26T21:48:00.287351",
+      "desiredDeadline": "2026-11-28T10:00:00",
+      "completedAt": null,
+      "unitPrice": "100.00",
+      "basePrice": "400.00",
+      "totalPrice": "500.00"
+    },
+    {
+      "orderId": "ORD010",
+      "clientId": 6,
+      "serviceId": 1,
+      "receptionistId": 2,
+      "photographerId": null,
+      "quantity": 3,
+      "isUrgent": false,
+      "status": "Прийнято",
+      "createdAt": "2026-11-26T21:50:16.612291",
+      "desiredDeadline": "2026-11-29T14:30:00",
+      "completedAt": null,
+      "unitPrice": "5.00",
+      "basePrice": "15.00",
+      "totalPrice": "15.00"
     }
   ],
   "payments": [
@@ -399,6 +447,36 @@
       {
         "materialId": 3,
         "quantity": "0.08"
+      }
+    ],
+    "ORD008": [
+      {
+        "materialId": 1,
+        "quantity": "16"
+      },
+      {
+        "materialId": 3,
+        "quantity": "0.08"
+      }
+    ],
+    "ORD009": [
+      {
+        "materialId": 1,
+        "quantity": "16"
+      },
+      {
+        "materialId": 3,
+        "quantity": "0.08"
+      }
+    ],
+    "ORD010": [
+      {
+        "materialId": 1,
+        "quantity": "3"
+      },
+      {
+        "materialId": 4,
+        "quantity": "0.6"
       }
     ]
   },
