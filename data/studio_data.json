@@ -21,8 +21,8 @@
       "role": "Receptionist",
       "fullName": "Ірина Шевченко",
       "login": "reception2",
-      "phone": "+380673333333",
-      "password": "1234"
+      "password": "1234",
+      "phone": "+380673333333"
     },
     {
       "employeeId": 4,
@@ -71,6 +71,12 @@
       "firstName": "Софія",
       "lastName": "Мельник",
       "phone": "+380631234571"
+    },
+    {
+      "clientId": 6,
+      "firstName": "Віталій",
+      "lastName": "Потапенко",
+      "phone": "+380996667766"
     }
   ],
   "services": [
@@ -236,6 +242,22 @@
       "unitPrice": "80.00",
       "basePrice": "80.00",
       "totalPrice": "100.00"
+    },
+    {
+      "orderId": "ORD007",
+      "clientId": 6,
+      "serviceId": 3,
+      "receptionistId": 2,
+      "photographerId": null,
+      "quantity": 4,
+      "isUrgent": false,
+      "status": "Прийнято",
+      "createdAt": "2026-11-26T21:34:54.157535",
+      "desiredDeadline": "2020-12-01T12:30:00",
+      "completedAt": null,
+      "unitPrice": "100.00",
+      "basePrice": "400.00",
+      "totalPrice": "400.00"
     }
   ],
   "payments": [
@@ -368,7 +390,17 @@
         "quantity": "1.5"
       }
     ],
-    "ORD006": []
+    "ORD006": [],
+    "ORD007": [
+      {
+        "materialId": 1,
+        "quantity": "16"
+      },
+      {
+        "materialId": 3,
+        "quantity": "0.08"
+      }
+    ]
   },
   "usageOperations": {
     "demo-op-001": {

@@ -239,9 +239,12 @@ def register_client(studio):
 
 
 def create_order(studio, employee):
+    print('Список клієнтів:')
     show_clients(studio)
     if not studio.storage['clients']:
         return
+    print()
+    print('Список послуг:')
     show_services(studio)
     if not studio.storage['services']:
         return
