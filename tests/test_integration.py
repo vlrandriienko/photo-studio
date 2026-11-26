@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from decimal import Decimal
 import importlib
 
@@ -109,6 +109,9 @@ def test_material_shortage_and_replenishment(studio):
     assert studio.registerMaterialUsage(2, order.orderId, 2, 60, "shortage-ink") is True
     assert studio.completeOrder(2, order.orderId) is True
     assert order.getStatus() == OrderStatus.ready
+    assert studio.getMaterial(1).getStockQuantity() == Decimal("10")
+    assert studio.getMaterial(2).getStockQuantity() == Decimal("30")
+    assert len(studio.storage["usages"]) == 2
 
 
 def test_notification_integration(studio):
@@ -128,6 +131,8 @@ def test_notification_integration(studio):
     assert notification.clientId == 2
     assert notification.getStatus() is True
     assert order.orderId in notification.messageText
+    assert studio.completeOrder(2, order.orderId) is False
+    assert len(studio.storage["notifications"]) == 1
 
 
 def test_payment_and_issue_integration(studio):
@@ -151,21 +156,27 @@ def test_payment_and_issue_integration(studio):
 
 
 def test_daily_report_integration(studio):
-    today = datetime.now()
-    yesterday = today - timedelta(days=1)
+    previous_day = datetime(2030, 11, 25, 10)
+    report_day = datetime(2030, 11, 26, 10)
 
     first = create_test_order(studio, client_id=1, quantity=2)
     start_and_finish_order(studio, first, "report-first")
     assert studio.recordPayment(1, first.orderId, "20.00", "Картка") is True
 
-    second = create_test_order(studio, client_id=2, service_id=2, quantity=1, deadline=yesterday)
+    second = create_test_order(
+        studio,
+        client_id=2,
+        service_id=2,
+        quantity=1,
+        deadline=report_day,
+    )
     start_and_finish_order(studio, second, "report-second")
     assert studio.recordPayment(1, second.orderId, "200.00", "Готівка") is True
 
-    first_completed = today.replace(hour=10, minute=0, second=0, microsecond=0)
-    first_payment = today.replace(hour=11, minute=0, second=0, microsecond=0)
-    second_completed = yesterday.replace(hour=15, minute=0, second=0, microsecond=0)
-    second_payment = yesterday.replace(hour=16, minute=0, second=0, microsecond=0)
+    first_completed = previous_day.replace(hour=15)
+    second_completed = report_day.replace(hour=15)
+    first_payment = report_day.replace(hour=11)
+    second_payment = report_day.replace(hour=16)
 
     first.__dict__["_Order__completedAt"] = first_completed
     second.__dict__["_Order__completedAt"] = second_completed
@@ -177,15 +188,21 @@ def test_daily_report_integration(studio):
     for usage in studio.storage["usages"][2:]:
         usage.__dict__["_MaterialUsage__recordedAt"] = second_completed
 
-    today_report = studio.generateDailyReport(3, today.date())
-    assert today_report.completedOrders == 1
-    assert today_report.totalRevenue == Decimal("20.00")
-    assert today_report.materialSummary == {"Фотопапір": Decimal("4"), "Чернила": Decimal("2")}
+    previous_day_report = studio.generateDailyReport(3, previous_day.date())
+    assert previous_day_report.completedOrders == 1
+    assert previous_day_report.totalRevenue == Decimal("0")
+    assert previous_day_report.materialSummary == {
+        "Фотопапір": Decimal("4"),
+        "Чернила": Decimal("2"),
+    }
 
-    yesterday_report = studio.generateDailyReport(3, yesterday.date())
-    assert yesterday_report.completedOrders == 1
-    assert yesterday_report.totalRevenue == Decimal("200.00")
-    assert yesterday_report.materialSummary == {"Фотопапір": Decimal("1"), "Чернила": Decimal("3")}
+    report_day_report = studio.generateDailyReport(3, report_day.date())
+    assert report_day_report.completedOrders == 1
+    assert report_day_report.totalRevenue == Decimal("220.00")
+    assert report_day_report.materialSummary == {
+        "Фотопапір": Decimal("1"),
+        "Чернила": Decimal("3"),
+    }
 
 
 def test_save_load_integration(studio, tmp_path, monkeypatch):
@@ -219,8 +236,41 @@ def test_save_load_integration(studio, tmp_path, monkeypatch):
     assert len(restored.storage["materials"]) == 2
     assert len(restored.storage["payments"]) == 1
     assert len(restored.storage["usages"]) == 2
+    assert restored_order in restored.getClient(2).getOrders()
+    assert restored.materialNorms == studio.materialNorms
+    restored_operations = {
+        operation_id: (
+            operation["order"].orderId,
+            operation["material"].materialId,
+            operation["quantity"],
+        )
+        for operation_id, operation in restored.storage["usageOperations"].items()
+    }
+    original_operations = {
+        operation_id: (
+            operation["order"].orderId,
+            operation["material"].materialId,
+            operation["quantity"],
+        )
+        for operation_id, operation in studio.storage["usageOperations"].items()
+    }
+    assert restored_operations == original_operations
 
     restored_payment = restored.storage["payments"][0]
     assert restored_payment.orderId == restored_order.orderId
     assert restored_payment.isPaid() is True
     assert restored.storage["usages"][0].order is restored_order
+
+    stock_before_duplicate = restored.getMaterial(1).getStockQuantity()
+    usage_count_before_duplicate = len(restored.storage["usages"])
+    operation_count_before_duplicate = len(restored.storage["usageOperations"])
+    restored.registerMaterialUsage(
+        2,
+        restored_order.orderId,
+        1,
+        8,
+        "save-load-ORD001-1",
+    )
+    assert restored.getMaterial(1).getStockQuantity() == stock_before_duplicate
+    assert len(restored.storage["usages"]) == usage_count_before_duplicate
+    assert len(restored.storage["usageOperations"]) == operation_count_before_duplicate
