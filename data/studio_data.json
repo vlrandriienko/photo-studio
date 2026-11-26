@@ -113,7 +113,7 @@
     {
       "materialId": 1,
       "name": "Фотопапір 10×15",
-      "stockQuantity": "56",
+      "stockQuantity": "47",
       "unit": "аркуш",
       "minStock": "10"
     },
@@ -280,10 +280,10 @@
       "clientId": 6,
       "serviceId": 3,
       "receptionistId": 2,
-      "photographerId": null,
+      "photographerId": 5,
       "quantity": 4,
       "isUrgent": true,
-      "status": "Прийнято",
+      "status": "В роботі",
       "createdAt": "2026-11-26T21:48:00.287351",
       "desiredDeadline": "2026-11-28T10:00:00",
       "completedAt": null,
@@ -379,6 +379,20 @@
       "materialId": 2,
       "quantity": "1",
       "recordedAt": "2026-11-23T11:30:00"
+    },
+    {
+      "usageId": 6,
+      "orderId": "ORD009",
+      "materialId": 1,
+      "quantity": "4",
+      "recordedAt": "2026-11-26T22:02:43.899785"
+    },
+    {
+      "usageId": 7,
+      "orderId": "ORD009",
+      "materialId": 1,
+      "quantity": "5",
+      "recordedAt": "2026-11-26T22:08:50.477665"
     }
   ],
   "materialNorms": {
@@ -505,6 +519,16 @@
       "orderId": "ORD005",
       "materialId": 2,
       "quantity": "1"
+    },
+    "6419c0592f904bc68965484125905f71": {
+      "orderId": "ORD009",
+      "materialId": 1,
+      "quantity": "4"
+    },
+    "594151e28c3f48059e018efada095bff": {
+      "orderId": "ORD009",
+      "materialId": 1,
+      "quantity": "5"
     }
   }
 }
