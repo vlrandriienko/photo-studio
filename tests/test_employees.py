@@ -16,7 +16,6 @@ from photostudio.studio import Studio
 
 @pytest.fixture
 def studio():
-    """Нова фотостудія в пам'яті для кожного тесту, без запису у файли."""
     studio = Studio()
     studio.addEmployee(Receptionist(1, "Приймальник", "reception", "1234", "001", studio.storage))
     studio.addEmployee(Photographer(2, "Фотограф", "photo", "1234", "002", studio.storage))
@@ -36,7 +35,7 @@ def create_order(studio, quantity=3, urgent=False, deadline=None):
 
 def finish_order(studio, order):
     assert studio.startOrder(2, order.orderId) is True
-    assert studio.registerMaterialUsage(2, order.orderId, 1, order.quantity * 2, "finish") is True
+    assert studio.registerMaterialUsage(2, order.orderId, 1, order.quantity * 2, f"finish-{order.orderId}") is True
     assert studio.completeOrder(2, order.orderId) is True
 
 
@@ -48,6 +47,7 @@ def test_employee_profile_and_password(studio):
     assert admin.getLogin() == "admin"
     assert admin.verifyPassword("1234") is True
     assert admin.verifyPassword("wrong") is False
+    assert admin.verifyPassword(None) is False
 
 
 def test_employee_rejects_invalid_data():
@@ -57,6 +57,10 @@ def test_employee_rejects_invalid_data():
         Administrator(0, "Анна", "admin", "1234", "001", {})
     with pytest.raises(ValueError):
         Administrator(1, "", "admin", "1234", "001", {})
+    with pytest.raises(ValueError):
+        Administrator(1, 123, "admin", "1234", "001", {})
+    with pytest.raises(ValueError):
+        Administrator(1, "Анна", "admin", "1234", "001", [])
 
 
 def test_each_role_has_its_own_permissions(studio):
@@ -158,6 +162,7 @@ def test_administrator_views_and_replenishes_materials(studio):
     assert materials == studio.storage["materials"]
     materials.clear()
     assert len(admin.getMaterials()) == 1
+    assert admin.viewStock() == admin.getMaterials()
     assert studio.replenishMaterial(3, 1, -1) is False
     assert studio.replenishMaterial(3, 1, "5.5") is True
     assert studio.getMaterial(1).getStockQuantity() == Decimal("105.5")
@@ -173,3 +178,87 @@ def test_administrator_generates_daily_report(studio):
     assert report.materialSummary == {"Фотопапір": Decimal("6")}
     with pytest.raises(ValueError):
         studio.getEmployee(3).generateDailyReport("2030-01-01")
+    with pytest.raises(ValueError):
+        studio.getEmployee(3).generateDailyReport(datetime(2030, 1, 1, 12))
+
+
+def test_receptionist_rejects_invalid_order_data(studio):
+    receptionist = studio.getEmployee(1)
+    client = studio.getClient(1)
+    service = studio.getService(1)
+    deadline = datetime(2030, 1, 1)
+
+    with pytest.raises(ValueError):
+        receptionist.createOrder("INVALID", None, service, 3, deadline)
+    with pytest.raises(ValueError):
+        receptionist.createOrder("", client, service, 3, deadline)
+    with pytest.raises(ValueError):
+        receptionist.createOrder("INVALID", client, service, 3, "2030-01-01")
+
+    assert studio.storage["orders"] == []
+    assert client.getOrders() == []
+
+
+def test_receptionist_rejects_invalid_payment_data(studio):
+    order = create_order(studio)
+    finish_order(studio, order)
+    receptionist = studio.getEmployee(1)
+
+    assert receptionist.recordPayment(1, order, "abc", "Картка") is False
+    assert receptionist.recordPayment(1, order, 30, None) is False
+    assert receptionist.recordPayment(1, order, 30, "   ") is False
+    assert studio.storage["payments"] == []
+    assert order.getStatus() == OrderStatus.ready
+
+
+def test_receptionist_keeps_payments_and_issue_separate_for_each_order(studio):
+    first = create_order(studio)
+    second = create_order(studio)
+    finish_order(studio, first)
+    finish_order(studio, second)
+    receptionist = studio.getEmployee(1)
+
+    assert receptionist.recordPayment(1, first, 30, "Картка") is True
+    assert receptionist.recordPayment(2, first, 30, "Картка") is False
+    assert receptionist.recordPayment(1, second, 30, "Картка") is False
+    assert len(studio.storage["payments"]) == 1
+
+    assert receptionist.issueOrder(second) is False
+    assert second.getStatus() == OrderStatus.ready
+    assert receptionist.issueOrder(first) is True
+    assert receptionist.issueOrder(first) is False
+
+
+def test_photographer_rejects_operations_in_wrong_status(studio):
+    order = create_order(studio)
+    photographer = studio.getEmployee(2)
+    paper = studio.getMaterial(1)
+    assert photographer.completeOrder(order) is False
+    assert photographer.registerMaterialUsage(order, paper, 6, "too-early") is False
+    assert photographer.startOrder(order) is True
+    assert photographer.startOrder(order) is False
+    assert paper.getStockQuantity() == Decimal("100")
+    assert studio.storage["usages"] == []
+
+
+def test_photographer_requires_material_configuration(studio):
+    order = create_order(studio)
+    del studio.storage["materialRequirements"][order.orderId]
+
+    with pytest.raises(ValueError, match="потреби в матеріалах"):
+        studio.getEmployee(2).startOrder(order)
+    assert order.getStatus() == OrderStatus.accepted
+    assert studio.getMaterial(1).getStockQuantity() == Decimal("100")
+
+
+def test_photographer_sums_repeated_material_requirements(studio):
+    order = create_order(studio)
+    paper = studio.getMaterial(1)
+    studio.storage["materialRequirements"][order.orderId] = [(paper, 4), (paper, 4)]
+    photographer = studio.getEmployee(2)
+    assert photographer.startOrder(order) is True
+    assert photographer.registerMaterialUsage(order, paper, 6, "part-1") is True
+    assert photographer.completeOrder(order) is False
+    assert photographer.registerMaterialUsage(order, paper, 2, "part-2") is True
+    assert photographer.completeOrder(order) is True
+    assert paper.getStockQuantity() == Decimal("92")

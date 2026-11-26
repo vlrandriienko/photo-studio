@@ -6,3 +6,5 @@ coverage.json
 __pycache__/
 .pytest_cache/
 *.pyc
+/TestResults/
+/run_tests.py
