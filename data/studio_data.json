@@ -28,7 +28,7 @@
       "employeeId": 4,
       "role": "Photographer",
       "fullName": "Марія Коваль",
-      "login": "photographer1",
+      "login": "photographer",
       "password": "1234",
       "phone": "+380674444444"
     },
@@ -39,6 +39,14 @@
       "login": "photographer2",
       "password": "1234",
       "phone": "+380675555555"
+    },
+    {
+      "employeeId": 6,
+      "role": "Photographer",
+      "fullName": "Коваленко Анна Володимирівна",
+      "login": "admin2",
+      "password": "1234",
+      "phone": "+380677894512"
     }
   ],
   "clients": [
@@ -107,13 +115,20 @@
       "baseTariff": "80.00",
       "measurementUnit": "фото",
       "requiresMaterials": false
+    },
+    {
+      "serviceId": 5,
+      "name": "Друк А4",
+      "baseTariff": "20",
+      "measurementUnit": "фото",
+      "requiresMaterials": true
     }
   ],
   "materials": [
     {
       "materialId": 1,
       "name": "Фотопапір 10×15",
-      "stockQuantity": "56",
+      "stockQuantity": "51",
       "unit": "аркуш",
       "minStock": "10"
     },
@@ -127,7 +142,7 @@
     {
       "materialId": 3,
       "name": "Чорнило",
-      "stockQuantity": "2.48",
+      "stockQuantity": "2.4",
       "unit": "мл",
       "minStock": "0.5"
     },
@@ -144,6 +159,13 @@
       "stockQuantity": "12",
       "unit": "шт.",
       "minStock": "2"
+    },
+    {
+      "materialId": 6,
+      "name": "Папір А4",
+      "stockQuantity": "1000",
+      "unit": "шт",
+      "minStock": "50"
     }
   ],
   "orders": [
@@ -280,13 +302,13 @@
       "clientId": 6,
       "serviceId": 3,
       "receptionistId": 2,
-      "photographerId": null,
+      "photographerId": 5,
       "quantity": 4,
       "isUrgent": true,
-      "status": "Прийнято",
+      "status": "Готово",
       "createdAt": "2026-11-26T21:48:00.287351",
       "desiredDeadline": "2026-11-28T10:00:00",
-      "completedAt": null,
+      "completedAt": "2026-11-26T22:15:09.811217",
       "unitPrice": "100.00",
       "basePrice": "400.00",
       "totalPrice": "500.00"
@@ -324,6 +346,14 @@
       "paymentDate": "2026-11-23T12:30:00",
       "paymentMethod": "готівка",
       "isConfirmed": true
+    },
+    {
+      "paymentId": 3,
+      "orderId": "ORD009",
+      "amount": "500.00",
+      "paymentDate": "2026-11-26T22:17:03.461780",
+      "paymentMethod": "г",
+      "isConfirmed": true
     }
   ],
   "notifications": [
@@ -341,6 +371,14 @@
       "clientId": 5,
       "messageText": "Ваше замовлення #ORD005 готове до видачі! До сплати: 12.00 грн.",
       "createdAt": "2026-11-23T12:00:00",
+      "isSent": true
+    },
+    {
+      "notificationId": 3,
+      "orderId": "ORD009",
+      "clientId": 6,
+      "messageText": "Ваше замовлення #ORD009 готове до видачі! До сплати: 500.00 грн.",
+      "createdAt": "2026-11-26T22:15:09.811217",
       "isSent": true
     }
   ],
@@ -379,6 +417,34 @@
       "materialId": 2,
       "quantity": "1",
       "recordedAt": "2026-11-23T11:30:00"
+    },
+    {
+      "usageId": 6,
+      "orderId": "ORD009",
+      "materialId": 1,
+      "quantity": "4",
+      "recordedAt": "2026-11-26T22:02:43.899785"
+    },
+    {
+      "usageId": 7,
+      "orderId": "ORD009",
+      "materialId": 1,
+      "quantity": "5",
+      "recordedAt": "2026-11-26T22:08:50.477665"
+    },
+    {
+      "usageId": 8,
+      "orderId": "ORD009",
+      "materialId": 1,
+      "quantity": "16",
+      "recordedAt": "2026-11-26T22:14:44.390532"
+    },
+    {
+      "usageId": 9,
+      "orderId": "ORD009",
+      "materialId": 3,
+      "quantity": "0.08",
+      "recordedAt": "2026-11-26T22:15:04.883748"
     }
   ],
   "materialNorms": {
@@ -393,7 +459,10 @@
       "1": "4",
       "3": "0.02"
     },
-    "4": {}
+    "4": {},
+    "5": {
+      "6": "1"
+    }
   },
   "materialRequirements": {
     "ORD001": [
@@ -505,6 +574,26 @@
       "orderId": "ORD005",
       "materialId": 2,
       "quantity": "1"
+    },
+    "6419c0592f904bc68965484125905f71": {
+      "orderId": "ORD009",
+      "materialId": 1,
+      "quantity": "4"
+    },
+    "594151e28c3f48059e018efada095bff": {
+      "orderId": "ORD009",
+      "materialId": 1,
+      "quantity": "5"
+    },
+    "f0df8b7611cf4928b47b28190a091f99": {
+      "orderId": "ORD009",
+      "materialId": 1,
+      "quantity": "16"
+    },
+    "68e12900ff484e68b07bd935f932555b": {
+      "orderId": "ORD009",
+      "materialId": 3,
+      "quantity": "0.08"
     }
   }
 }
