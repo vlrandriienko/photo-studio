@@ -1,0 +1,10 @@
+[run]
+source = .
+branch = False
+
+[report]
+include_namespace_packages = True
+include =
+    photostudio/*
+    main.py
+precision = 2
